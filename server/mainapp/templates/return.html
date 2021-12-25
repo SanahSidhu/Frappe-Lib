@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/return.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;1,700&display=swap" rel="stylesheet">
+    <title>Return Books</title>
+</head>
+<body>
+    <style>
+        input[type=text]{
+        width:100%;
+        border:2px solid #aaa;
+        border-radius:4px;
+        margin:8px 0;
+        outline:none;
+        padding:8px;
+        box-sizing:border-box;
+        transition:.3s;
+      }
+      
+      input[type=text]:focus{
+        border-color:#f2dac3;
+        box-shadow:0 0 8px 0 #f2dac3;
+      }
+    </style>
+    <!-- Header begins -->
+
+
+    <section id="header">
+        <div class="header container">
+            <div class="nav-bar">
+                <div class="brand">
+                    <a href="#hero"><h1><span>Library </span>Management</h1></a>
+                </div>
+                <div class="nav-list">
+                    <div class="hamburger"><div class="bar"></div></div>
+                    <ul>
+                        <li><a href="/index" data-after="">Home</a></li>
+                        <li><a href="/search" data-after="">Search book</a></li>
+                        <li><a href="/issue" data-after="">ISSUE BOOK</a></li>
+                        <li><a href="/" data-after="">LOGOUT</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Header ends -->
+
+
+  <!-- Hero Section  -->
+    <section id="hero" style="background-color: cadetblue;">
+
+        <div class="hero container" style="background-image: url('https://buddhify.com/wp-content/uploads/2018/07/iStock-689785084.jpg');
+        background-size: cover;">
+            
+        <div>
+        <h1>To Return Books Fill In The Form <span></span></h1>
+<form action="" method="POST">
+
+    <label for="id" class="input" style="font-size: x-large; color: black;">ISBN<span></span></label>
+    <input type="text" id="id" name="isbn"><br><br>
+
+    <label for="returnDate" class="input" style="font-size: x-large; color: black;">Email<span></span></label>
+    <input type="text" id="return" name="email"><br><br> 
+
+    <label for="id" class="input" style="font-size: x-large; color: black;">FEE<span></span></label>
+    <input type="text" id="id" name="fee"><br><br>
+
+                <button class="cta" style="margin-top: 10px;" type="submit" name="b">Submit</button>
+
+</form>
+{% if return_true %}
+    <h1>"Book Returned Sucessfully!"</h1>
+{% endif %}
+
+{% if return_false %}
+    <h1>"Error in returning this book :("</h1>
+{% endif %}
+</div>
+    </section>
+    
+  <!-- End Hero Section  -->
+
+  
