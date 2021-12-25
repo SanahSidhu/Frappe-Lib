@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/home.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;1,700&display=swap" rel="stylesheet">
+    <title>Issue Books</title>
+</head>
+<body>
+    
+    <!-- Header begins -->
+<style>
+    input[type=text]{
+    width:100%;
+    border:2px solid #aaa;
+    border-radius:4px;
+    margin:8px 0;
+    outline:none;
+    padding:8px;
+    box-sizing:border-box;
+    transition:.3s;
+  }
+  
+  input[type=text]:focus{
+    border-color:#f2dac3;
+    box-shadow:0 0 8px 0 #f2dac3;
+  }
+</style>
+
+    <section id="header">
+        <div class="header container">
+            <div class="nav-bar">
+                <div class="brand">
+                    <a href="#hero"><h1><span>Library </span>Management</h1></a>
+                </div>
+                <div class="nav-list">
+                    <div class="hamburger"><div class="bar"></div></div>
+                    <ul>
+                        <li><a href="/index" data-after="">HOME</a></li>
+                        <li><a href="/search" data-after="">Search book</a></li>
+                        <li><a href="/return" data-after="">BOOK RETURN</a></li>
+                        <li><a href="/" data-after="">LOGOUT</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Header ends -->
+
+
+  <!-- Hero Section  -->
+    <section id="hero" style="background-color: cadetblue;">
+
+        <div class="hero container" style="background-image: url('https://buddhify.com/wp-content/uploads/2018/07/iStock-689785084.jpg');
+        background-size: cover;">
+            <div>
+                <h1>To Issue Books Fill In The Form<span></span></h1>
+        <form id="sympform" action="" method="post" >
+            <label for="name" style="font-size: x-large; color: black;">Amount</label>
+            <input type="text" id="name" name="debt" style="	outline: none; border: none;"><br><br>
+
+            <label for="id" style="font-size: x-large; color: black;">Email ID</label>
+            <input type="text" id="id" name="email" style="	outline: none; border: none;"><br><br>
+
+            <label for="date" style="font-size: x-large; color:black;">ISBN</label>
+            <input type="text" id="date" name="isbn" style="	outline: none; border: none;"><br><br>
+
+            <button class="cta" style="margin-top: 10px;" type="submit" name="b">Search</button>
+          
+            {% if not_available %}
+                <h1>Book is not available :(</h1>
+            {% endif %}
+
+            {% if issue_error %}
+                    <H1>"Book can not be issued :("</H1>
+            {% endif %}
+
+            {% if available %}
+                <h1>Book issued successfully!</h1>
+            {% endif %}
+
+        </form>
+
+
+                
+      
+    </section>
+    
+  <!-- End Hero Section  -->
