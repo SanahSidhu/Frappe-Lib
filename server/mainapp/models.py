@@ -1,19 +1,16 @@
 import sqlite3 as s
-import random 
+import random
 import string
-from typing import Dict, List, Any
+from typing import Dict, List
 
-print("models_inidividual_start")
+
 def lib_user(path: str):
     conn = s.connect(path)
     cur = conn.cursor()
 
-    tbl = "CREATE TABLE IF NOT EXISTS admin(Id INTEGER PRIMARY KEY, Email varchar(200) UNIQUE, Password TEXT)"
-
-    query = "insert into admin values(001,'ss6153@srmist.edu.in','123456')"
+    tbl = "CREATE TABLE IF NOT EXISTS admin(Id INTEGER PRIMARY KEY,Email varchar(200) UNIQUE, Password TEXT)"
 
     cur.execute(tbl)
-    cur.execute(query)
     conn.commit()
 
 
@@ -27,11 +24,11 @@ def create_member(path: str):
     conn.commit()
 
 
-def book_issue(path: str):
+def create_issue(path: str):
     conn = s.connect(path)
     cur = conn.cursor()
 
-    tbl = "CREATE TABLE IF NOT EXISTS issues(ISBN varchar(30) PRIMARY KEY , Issue_Date datetime, Fee INTEGER, Mem_Email)"
+    tbl = "CREATE TABLE IF NOT EXISTS issues(ISBN varchar(30) PRIMARY KEY , Issue_Date TEXT, Fee INTEGER, Mem_Email varchar(200))"
 
     cur.execute(tbl)
     conn.commit()
@@ -68,7 +65,7 @@ def new_mem(path: str, data: tuple):
     conn = s.connect(path)
     cur = conn.cursor()
 
-    add_mem = f"insert into member values('{data}')"
+    add_mem = f"insert into member values{data}"
 
     cur.execute(add_mem)
     conn.commit()
@@ -83,14 +80,14 @@ def mem_exists(path: str, mem_email: str) -> bool:
 
     cur.execute(mem_chk)
     mem_chk_res = cur.fetchone()
-    
-    if len(mem_chk_res) == 0:
+
+    if mem_chk_res is None:
         return False
     else:
         return True
 
 
-def book_available(path: str,isbn: str) -> bool:
+def book_available(path: str, isbn: str) -> bool:
     #if book is not already issued to sm1 else
     conn = s.connect(path)
     cur = conn.cursor()
@@ -100,7 +97,7 @@ def book_available(path: str,isbn: str) -> bool:
     cur.execute(chk_issue)
     chk_issue_res = cur.fetchone()
 
-    if len(chk_issue_res) == 0:
+    if chk_issue_res is None:
         return True
     else:
         return False
@@ -122,13 +119,19 @@ def check_debt(path: str, mem_email: str) -> bool:
         return False
 
 
-def update_mem(path: str, isbn: str, mem_email: str ,fee: int):
+def update_mem(path: str, isbn: str, mem_email: str, fee: int):
 
     conn = s.connect(path)
     cur = conn.cursor()
 
     mem_debt = f"update member set Debt = Debt + {fee} where Email = '{mem_email}'"
-    mem_isbn = f"update member set ISBN = ISBN + ',' + '{isbn}' where Email = '{mem_email}'"
+
+    get_isbn = f"select ISBN from member where Email = '{mem_email}'"
+    cur.execute(get_isbn)
+    get_isbn_res = cur.fetchall()
+
+    new_isbn_str = get_isbn_res[0][0] + ',' + isbn
+    mem_isbn = f"update member set ISBN = '{new_isbn_str}' where Email = '{mem_email}'"
 
     cur.execute(mem_debt)
     cur.execute(mem_isbn)
@@ -138,7 +141,8 @@ def update_mem(path: str, isbn: str, mem_email: str ,fee: int):
 def update_issue(path: str, data: tuple):
     conn = s.connect(path)
     cur = conn.cursor()
-    issued = f"insert into issues values('{data}')"
+
+    issued = f"insert into issues values{data}"
 
     cur.execute(issued)
     conn.commit()
@@ -147,15 +151,16 @@ def update_issue(path: str, data: tuple):
 def update_return(path: str, isbn: str, mem_email: str, fee: int) -> bool:
     conn = s.connect(path)
     cur = conn.cursor()
-    
+
     chk_isbn = f"select ISBN from member where Email = '{mem_email}'"
     cur.execute(chk_isbn)
-    chk_isbn_res = cur.fetchone()
+    chk_isbn_res = cur.fetchall()
 
-    if (len(chk_isbn_res)) == 0:
+    print(chk_isbn_res[0][0])
+    if chk_isbn_res is None:
         return False
     else:
-        isbn_li = chk_isbn_res[0].split(",")
+        isbn_li = chk_isbn_res[0][0].split(",")
         for book_isbn in isbn_li:
             if book_isbn == isbn:
                 isbn_li.remove(isbn)
@@ -168,12 +173,12 @@ def update_return(path: str, isbn: str, mem_email: str, fee: int) -> bool:
                 cur.execute(mem_return)
 
                 issue_return = f"delete from issues where ISBN = '{isbn}'"
-                cur.exececute(issue_return)
+                cur.execute(issue_return)
 
                 conn.commit()
                 return True
-            else:
-                return False
+
+    return False
 
 
 def get_email(path: str):
@@ -189,7 +194,7 @@ def get_email(path: str):
 
     cur.execute(get_mail)
     emails = cur.fetchall()
-    
+
     return emails
 
 
@@ -217,7 +222,7 @@ def chk_admin_exist(path: str, ad_email: str) -> bool:
 def chk_pass(path: str, ad_email: str, passw: str) -> bool:
     conn = s.connect(path)
     cur = conn.cursor()
-    
+
     chk_passw = f"select Password from admin where Email='{ad_email}'"
     cur.execute(chk_passw)
     chk_passw_res = cur.fetchall()
@@ -247,7 +252,3 @@ def check_errors(data: Dict[str, List]) -> bool:
         return data['message'][0]
 
     return
-
-
-
-print("models_individual_end")
