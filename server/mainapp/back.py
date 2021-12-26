@@ -154,7 +154,7 @@ def searchpg():
                 return render_template("search.html", error = e)
             
             params = {
-                "author": author,
+                "authors": author,
                 "title": title
             }
 
@@ -167,7 +167,7 @@ def searchpg():
                     print(result)
                     if not isinstance(result, dict):
                         return render_template("search.html", not_found = True)
-                else:
+                
                     book_isbn = data['message'][0]['isbn']
                     fres = f"Book Found! Issue using ISBN code: {book_isbn}"
                     print("fres")
