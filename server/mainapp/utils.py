@@ -1,9 +1,10 @@
 import sqlite3 as s
-from datetime import datetime
+from datetime import date
 
-from mainapp.models import check_debt, generate_uid, mem_exists, new_mem, update_issue, update_mem, update_return, book_available
+from mainapp.models import (book_available, check_debt, generate_uid,
+                            mem_exists, new_mem, update_issue, update_mem,
+                            update_return)
 
-print("utils_start")
 
 def issue_book(path: str, isbn: str, mem_email: str, fee: int) -> bool:
 
@@ -12,8 +13,8 @@ def issue_book(path: str, isbn: str, mem_email: str, fee: int) -> bool:
             if check_debt( path, mem_email) == False:
                 update_mem(path, isbn, mem_email, fee)
 
-                cur_time = datetime.utcnow()
-                bdata = (isbn,cur_time, fee, mem_email)
+                cur_date = date.today().strftime("%d-%m-%Y")
+                bdata = (isbn,cur_date, fee, mem_email)
 
                 update_issue(path, bdata)
                 return True
@@ -26,6 +27,11 @@ def issue_book(path: str, isbn: str, mem_email: str, fee: int) -> bool:
         uid = generate_uid(path)
         mdata = (uid, mem_email, fee, isbn)
         new_mem(path, mdata)
+
+        cur_date = date.today().strftime("%d-%m-%Y")
+        bdata = (isbn, cur_date, fee, mem_email)
+
+        update_issue(path, bdata)
         return True
 
 
@@ -34,5 +40,3 @@ def return_book( path: str, isbn: str, mem_email: str, fee: int) -> bool:
     if mem_exists(path, mem_email):
         fres = update_return( path, isbn, mem_email, fee)
     return fres
-
-print("utils_end")
