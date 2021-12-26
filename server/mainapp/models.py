@@ -156,7 +156,7 @@ def update_return(path: str, isbn: str, mem_email: str, fee: int) -> bool:
     cur.execute(chk_isbn)
     chk_isbn_res = cur.fetchall()
 
-    print(chk_isbn_res[0][0])
+    
     if chk_isbn_res is None:
         return False
     else:
