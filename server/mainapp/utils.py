@@ -42,17 +42,17 @@ def issue_book(path: str, isbn: str, mem_email: str, fee: int) -> bool:
         else:
             return False
     else:
+        if book_available(path, isbn):
+            uid = generate_uid(path)
+            cur_date = date.today().strftime("%d-%m-%Y")
 
-        uid = generate_uid(path)
-        cur_date = date.today().strftime("%d-%m-%Y")
+            mdata = (uid, mem_email, fee, isbn)
+            bdata = (isbn, cur_date, fee, mem_email)
 
-        mdata = (uid, mem_email, fee, isbn)
-        bdata = (isbn, cur_date, fee, mem_email)
+            new_mem(path, mdata)
+            update_issue(path, bdata)
 
-        new_mem(path, mdata)
-        update_issue(path, bdata)
-
-        return True
+            return True
 
 
 def return_book( path: str, isbn: str, mem_email: str, fee: int) -> bool:
@@ -68,5 +68,6 @@ def return_book( path: str, isbn: str, mem_email: str, fee: int) -> bool:
     """
     if mem_exists(path, mem_email):
         fres = update_return( path, isbn, mem_email, fee)
-
-    return fres
+        return fres
+    else:
+        return False
