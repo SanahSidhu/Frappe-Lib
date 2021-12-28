@@ -37,7 +37,7 @@ def create_member(path: str):
     conn = s.connect(path)
     cur = conn.cursor()
 
-    tbl = "CREATE TABLE IF NOT EXISTS member(Mem_id varchar(16) PRIMARY KEY, Email varchar(200) UNIQUE, Debt INTEGER, ISBN varchar(200) UNIQUE)"
+    tbl = "CREATE TABLE IF NOT EXISTS member(Mem_id varchar(16) PRIMARY KEY, Email varchar(200) UNIQUE, Debt INTEGER, ISBN varchar(200))"
 
     cur.execute(tbl)
     conn.commit()
@@ -83,10 +83,10 @@ def generate_uid(path: str) -> str:
     cur.execute(chk_uid)
     chk_uid_res = cur.fetchall()
 
-    if chk_uid_res is None:
+    if len(chk_uid_res) == 0:
         return uid
     else:
-        uid = generate_uid()
+        uid = generate_uid(path)
 
 
 def new_mem(path: str, data: tuple):
@@ -178,7 +178,7 @@ def check_debt(path: str, mem_email: str) -> bool:
     cur.execute(chk_debt)
     chk_debt_res = cur.fetchone()
 
-    if chk_debt_res[0] > 500:
+    if chk_debt_res[0] >= 500:
         return True
     else:
         return False
@@ -206,7 +206,10 @@ def update_mem(path: str, isbn: str, mem_email: str, fee: int):
     cur.execute(get_isbn)
     get_isbn_res = cur.fetchall()
 
-    new_isbn_str = get_isbn_res[0][0] + ',' + isbn
+    if get_isbn_res[0][0] == "":
+        new_isbn_str = isbn
+    else:
+        new_isbn_str = get_isbn_res[0][0] + ',' + isbn
     mem_isbn = f"update member set ISBN = '{new_isbn_str}' where Email = '{mem_email}'"
 
     cur.execute(mem_debt)
@@ -257,7 +260,7 @@ def update_return(path: str, isbn: str, mem_email: str, fee: int) -> bool:
     chk_isbn_res = cur.fetchall()
 
     
-    if chk_isbn_res is None:
+    if len(chk_isbn_res) == 0:
         return False
     else:
         isbn_li = chk_isbn_res[0][0].split(",")
@@ -269,11 +272,12 @@ def update_return(path: str, isbn: str, mem_email: str, fee: int) -> bool:
                 updated_isbn = ','.join(isbn_li)
 
                 mem_return = f"update member set ISBN = '{updated_isbn}' where Email = '{mem_email}'"
+                cur.execute(mem_return)
+                
                 mem_return = f"update member set Debt = Debt - {fee} where Email = '{mem_email}'"
+                cur.execute(mem_return)
+                
                 issue_return = f"delete from issues where ISBN = '{isbn}'"
-               
-                cur.execute(mem_return)
-                cur.execute(mem_return)
                 cur.execute(issue_return)
 
                 conn.commit()
@@ -324,7 +328,7 @@ def chk_admin_exist(path: str, ad_email: str) -> bool:
     cur.execute(chk_admin)
     res = cur.fetchall()
 
-    if res is None:
+    if len(res) == 0:
         return False
     else:
         return True
