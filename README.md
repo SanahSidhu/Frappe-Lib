@@ -1,7 +1,7 @@
 # Frappe Library Management System
 
 ## Login Page
-![image](images/LM1.png)
+
 
 ```text
 email: abc@gmail.com 
